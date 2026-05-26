@@ -1,0 +1,8 @@
+test_runs/
+*.pt
+training_history.csv
+*.epos
+*.rrange
+*.csv
+__pycache__/
+*.py[cod]

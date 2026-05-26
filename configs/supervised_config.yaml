@@ -1,0 +1,56 @@
+### general ###
+run_id: 0
+log_path: "test_runs"                      # Path to save model checkpoint and metrics
+seed: 11                                   
+
+### model ###
+emb_dims: 128                              # Size of encoder embedding
+k: 10                                      # Nearest neighbors parameter for DGCNN
+
+### training ###
+epochs: 100
+batch_size: 64
+optimizer: "adam"                          # adam or adamW
+lr: 0.001                                  # Initial learning rate
+scheduler: "step"                          # exp, step, multi_step
+decay_step: 15                             # Decay step for lr decay
+decay_rate: 0.5                            # Decay rate for lr decay
+
+### data ###
+data_path: ".csv"                          # Path to data
+dataset_mode: "APT_basic"                  # APT_basic or APT_dynamic. Several data/dataset settings only apply to APT_dynamic
+num_points: 512                            # Number of atoms per environment
+train_size: 5000                           # Size of train set
+test_size: 3000                            # Size of test set
+dist_to_surface: 3                         # Values greater than 0 activate removing surface atoms as query atoms for environments (in nm). Only implemented in APT_dynamic
+test_tol: 0.33                             # Tolerance of how many train atoms are allowed to be overlapping with test data. 0 = no overlap allowed, 1 = total overlap allowed. Only implemented in APT_dynamic
+dissolve_n: true                           # If true, further splits single element ions (e.g. N2 => N1, N1). If false, one can use "n" as additional input feature to add stoichiometry
+input_features:                            # Input features to be considered (xyz is always needed)
+  - "x"
+  - "y"
+  - "z"
+  - "element"
+elements:                                  # Elements to consider
+  - "V"
+  - "Al"
+  - "N"
+
+### phase / dataset mapping ###
+phase_identifier: "VAlN_artificial"         # Identifier for the phase / sample 
+phase_dicts:                                # Phase labels are assumed to be saved as strings in csv file. This dict converts them to int for training
+  VAlN_artificial:
+    "VAlN_cubic": 0
+    "VN_cubic": 1
+    "AlN_cubic": 2
+    "AlN_hex": 3
+
+### augmentation ###
+augmentation: true                         # Application of augmentations (only training data)
+jitter: 0                                  # jitter in x,y,z (nm)
+rotation: "so3"                            # Rotation applied to environments (Options: z, so3)
+
+### sim/artificial data ###                # Extra settings for simulated / artificial APT data. Only implemented in APT_dynamic
+sim_data: true                             # Enables settings designed for simulated / artificial APT data
+gaussian_noise: 0.5                        # Spatial noise applied to data if sim_data is True
+det_efficiency: 0.25                       # Detection efficiency applied to data if sim_data is True
+isotropic_noise: false                     # Flag for gaussian_noise. If false, assumes noise_xy = noise_z * 5
