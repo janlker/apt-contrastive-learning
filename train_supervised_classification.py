@@ -91,7 +91,6 @@ def train(config):
         ####################
         model.train()
         train_loss_buf = []
-        train_label_buf = []
 
         start_time = datetime.now()
 
@@ -108,7 +107,6 @@ def train(config):
 
             metrics_func.calculate(cls_output, label)
             train_loss_buf.append(loss.detach().cpu().numpy())
-            train_label_buf.append(label.cpu())
 
         scheduler.step()
         if opt.param_groups[0]["lr"] < 0.000001:
@@ -118,43 +116,34 @@ def train(config):
         train_metrics = metrics_func.compute()
         metrics_func.reset()
         train_loss_buf = np.mean(train_loss_buf)
-        train_label_buf = torch.cat(train_label_buf).numpy()
-
 
         ####################
         # Test
         ####################
         test_loss_buf = []
-        test_label_buf = []
-        test_cls_buf = []
 
         model.eval()
         with torch.no_grad():
             for batch_idx, (data, label) in enumerate(test_loader):
-                data, label = (data.to(device, dtype=torch.float),label.to(device, dtype=torch.long).squeeze(),)
+                data, label = (data.to(device, dtype=torch.float),label.to(device, dtype=torch.long).squeeze())
                 data = data.permute(0, 2, 1)
 
                 cls_output, shape_feat = model(data)
                 loss = criterion(cls_output, label)
 
                 metrics_func.calculate(cls_output, label)
-
                 test_loss_buf.append(loss.cpu().numpy())
-                test_label_buf.append(label.cpu())
-                test_cls_buf.append(cls_output.cpu())
 
         test_loss_buf = np.mean(test_loss_buf)
-        test_label_buf = torch.cat(test_label_buf)
-        test_cls_buf = torch.cat(test_cls_buf)
         test_metrics = metrics_func.compute()   
         metrics_func.reset()
 
         if test_loss_buf <= best_test_loss:
             best_test_loss = test_loss_buf
-            torch.save(model_base.state_dict(),config.log_path  + "model_checkpoint.pt")  
+            torch.save(model_base.state_dict(),config.log_path_run  + "model_checkpoint.pt")  
 
         if epoch == config.epochs - 1:
-            torch.save(model_base.state_dict(),config.log_path + "model_checkpoint_last_epoch.pt")  
+            torch.save(model_base.state_dict(),config.log_path_run + "model_checkpoint_last_epoch.pt")  
         print("Epoch completed in: " + str(datetime.now()- start_time), flush=True)
 
         f1_train = train_metrics["f1_score_micro"]
@@ -182,7 +171,7 @@ def train(config):
             ]
         )
         np.savetxt(
-            config.log_path  + "training_history.csv",
+            config.log_path_run  + "training_history.csv",
             np.asarray(training_history),
             delimiter=",",
             header="epoch,train_loss,test_loss,f1_train,f1_test,f1_train_macro,f1_test_macro,ari_train,ari_test,lr",
@@ -214,8 +203,9 @@ if __name__ == "__main__":
     if not os.path.exists(config.log_path + "/run_" + str(config.run_id)): # create main folder of run
         os.makedirs(config.log_path + "/run_" + str(config.run_id))
     
-    config.log_path = f"{config.log_path}/run_{config.run_id}/"
-    OmegaConf.save(config=config, f=config.log_path+yaml_path.split("/")[-1])
+    config.log_path_run = f"{config.log_path}/run_{config.run_id}/"
+
+    OmegaConf.save(config=config, f=config.log_path_run+yaml_path.split("/")[-1])
 
     print("Run nbr: " + str(config.run_id))
 
@@ -234,5 +224,3 @@ if __name__ == "__main__":
         print("Using CPU")
 
     train(config)
-
-

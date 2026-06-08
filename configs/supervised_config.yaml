@@ -23,7 +23,7 @@ num_points: 512                            # Number of atoms per environment
 train_size: 5000                           # Size of train set
 test_size: 3000                            # Size of test set
 dist_to_surface: 3                         # Values greater than 0 activate removing surface atoms as query atoms for environments (in nm). Only implemented in APT_dynamic
-test_tol: 0.33                             # Tolerance of how many train atoms are allowed to be overlapping with test data. 0 = no overlap allowed, 1 = total overlap allowed. Only implemented in APT_dynamic
+test_tol: 0.33                             # Relative tolerance of how many train atoms are allowed to be overlapping with test data. 0 = no overlap allowed, 1 = total overlap allowed.
 dissolve_n: true                           # If true, further splits single element ions (e.g. N2 => N1, N1). If false, one can use "n" as additional input feature to add stoichiometry
 input_features:                            # Input features to be considered (xyz is always needed)
   - "x"

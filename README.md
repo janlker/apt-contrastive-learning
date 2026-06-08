@@ -12,7 +12,7 @@ The models accept APT data in either `.epos` (must be accompanied by a `.rrange`
 - **Labels:** An additional `label` column is required for the supervised model
 
 ## Repository Structure
-- `dataset.py`: PyTorch Datasets (`APT_basic` and `APT_dynamic` (*coming soon*))
+- `dataset.py`: PyTorch Datasets (`APT_basic` and `APT_dynamic`)
 - `models.py`: Network architectures including the DGCNN backbone, classification heads, and MLP projection heads for contrastive learning.
 - `configs/`: Contains `supervised_config.yaml` and `self_supervised_config.yaml` for setting hyperparameters, data paths, and augmentations.
 - `utils/`: Helper scripts for APT data ingestion, point cloud augmentations, metric calculations...
