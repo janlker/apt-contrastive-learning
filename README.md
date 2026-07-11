@@ -1,6 +1,6 @@
 # apt-contrastive-learning
 
-Code for the publication: *"An exploration of contrastive self-supervised learning for reconstructed atom probe tomography data"*.
+Code for the publication: *"An exploration of contrastive self-supervised learning for reconstructed atom probe tomography data"* ([doi:10.1088/2632-2153/ae5c57](https://doi.org/10.1088/2632-2153/ae5c57)).
 
 ## Models
 - **Supervised Classification** (`train_supervised_classification.py`)
